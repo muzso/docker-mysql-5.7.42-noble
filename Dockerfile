@@ -4,14 +4,8 @@ FROM ubuntu:noble
 # We've to use the ones from bionic.
 RUN set -eux; \
 	apt-mark showmanual > "/tmp/apt_manual_packages.txt"; \
-	{ \
-		echo; \
-		echo "Types: deb"; \
-		echo "URIs: http://archive.ubuntu.com/ubuntu/"; \
-		echo "Suites: bionic bionic-updates bionic-backports bionic-security"; \
-		echo "Components: main universe restricted multiverse"; \
-		echo "Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg"; \
-	} >> "/etc/apt/sources.list.d/ubuntu.sources"; \
+	newsrc="$(sed -r "s#noble#bionic#g" "/etc/apt/sources.list.d/ubuntu.sources")"; \
+	echo "$newsrc" >> "/etc/apt/sources.list.d/ubuntu.sources"; \
 	{ \
 		echo "Package: *mysql*"; \
 		echo "Pin: release n=bionic"; \

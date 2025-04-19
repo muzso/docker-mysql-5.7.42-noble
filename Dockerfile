@@ -1,4 +1,9 @@
+# muzso: we use Ubuntu (instead of Debian), because it has MySQL 5.7.* packages for ARM architecture too
 FROM ubuntu:noble
+
+# muzso: this is partly based off:
+# - the most recent Debian based Dockerfile: https://github.com/docker-library/mysql/blob/master/8.0/Dockerfile.debian
+# - the last Debian based 5.7.* state: https://github.com/docker-library/mysql/tree/eb1850601849ef7ef77a23f017a20debc95d597c/5.7
 
 # muzso: MySQL 5.* is not in Ubuntu noble.
 # We've to use the ones from bionic.
@@ -14,6 +19,7 @@ RUN set -eux; \
 
 # persistent / runtime deps
 # add gosu for easy step-down from root
+# https://github.com/tianon/gosu/releases
 ENV GOSU_VERSION 1.17
 RUN set -eux; \
 	apt-get update; \
@@ -41,6 +47,8 @@ RUN set -eux; \
 		mysql-server-${MYSQL_MAJOR} \
 	; \
 	echo "mysql-server-${MYSQL_MAJOR}" >> "/tmp/apt_manual_packages.txt"; \
+	# tzdata is required by MySQL DB setup
+	echo "tzdata" >> "/tmp/apt_manual_packages.txt"; \
 	apt-mark auto ".*" > /dev/null; \
 	apt-get install -y --no-install-recommends $(cat "/tmp/apt_manual_packages.txt"); \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \

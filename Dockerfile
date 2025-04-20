@@ -47,6 +47,10 @@ RUN set -eux; \
 		mysql-server-${MYSQL_MAJOR} \
 	; \
 	echo "mysql-server-${MYSQL_MAJOR}" >> "/tmp/apt_manual_packages.txt"; \
+	# comment out bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf
+	# so we can change its value in /etc/mysql/conf.d/docker.cnf
+	# (note: the latter is evaluated sooner, this mysql.conf.d/mysqld.cnf overrides whatever is in conf.d/docker.cnf)
+	sed -Ei "s/^([[:space:]]*bind-address[[:space:]]*=)/#&/" /etc/mysql/mysql.conf.d/mysqld.cnf; \
 	# tzdata is required by MySQL DB setup
 	echo "tzdata" >> "/tmp/apt_manual_packages.txt"; \
 	apt-mark auto ".*" > /dev/null; \

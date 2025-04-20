@@ -3,3 +3,4 @@ host_cache_size=0
 skip-host-cache
 skip-name-resolve
 secure-file-priv=NULL
+bind-address=0.0.0.0
